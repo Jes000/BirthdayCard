@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday!</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffe6e6;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input#open {
+      display: none;
+    }
+
+    .birthday-card {
+      position: relative;
+      width: 80vw;
+      max-width: 500px;
+      height: 80vw;
+      max-height: 500px;
+      transform-style: preserve-3d;
+      transform: perspective(2500px);
+      transition: .3s;
+    }
+
+    .card-front {
+      position: relative;
+      background-color: #fff;
+      width: 100%;
+      height: 100%;
+      transform-origin: left;
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,.15), 30px 0 50px rgba(0,0,0,0.3);
+      transition: .3s;
+    }
+
+    .card-front:before {
+      content: "";
+      position: absolute;
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      background-color: #ffcccb;
+      top: 10px;
+      left: 10px;
+    }
+
+    .card-inside {
+      position: absolute;
+      background-color: #fff;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      left: 0;
+      top: 0;
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,0.22), 100px 20px 100px rgba(0,0,0,0.1);
+    }
+
+    .open {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: transparent;
+      z-index: 6;
+      cursor: pointer;
+    }
+
+    #open:checked ~ .card-front {
+      transform: rotateY(-155deg);
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,.13), 30px 0 50px rgba(0,0,0,0.1);
+    }
+
+    #open:checked ~ .card-front:before {
+      z-index: 5;
+      background-color: #fff;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      box-shadow: inset 100px 20px 100px rgba(0,0,0,.1), 30px 0 50px rgba(0,0,0,0.1);
+    }
+
+    .note {
+      position: relative;
+      width: 80%;
+      height: 60%;
+      background-color: rgb(169, 200, 228);
+      top: 20%;
+      left: 10%;
+      color: #333;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      filter: drop-shadow(0 0 20px rgba(0,0,0,0.3));
+    }
+
+    .heart {
+      position: absolute;
+      top: -40px; /* Adjust this value to position the heart vertically */
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 100px; /* Adjust the size of the heart */
+      color: gold;
+      font-family: 'Cursive', sans-serif;
+    }
+
+    .heart:before {
+      content: "❤"; /* Unicode character for heart */
+    }
+
+    .cake-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: url('cake2.png') no-repeat center;
+      background-size: contain;
+    }
+
+    /* Candle CSS */
+    .candle {
+      width: 20px;
+      height: 80px;
+      background-color: #f4a261;
+      border-radius: 10px;
+      position: absolute;
+      bottom: 68%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .candle-wax {
+      width: 15px;
+      height: 80px;
+      background-color: #e76f51;
+      border-radius: 8px;
+      position: absolute;
+      bottom: 0;
+    }
+
+    .candle:nth-child(1) {
+      left: 40%;
+    }
+
+    .candle:nth-child(2) {
+      left: 50%;
+    }
+
+    .candle:nth-child(3) {
+      left: 60%;
+    }
+
+    /* Updated Flame CSS */
+    .flame {
+      position: absolute;
+      top: -40px;
+      width: 20px;
+      height: 30px;
+      left: 5%;
+      background: radial-gradient(circle at 50% 20%, rgba(255,255,0,1) 20%, rgba(255,165,0,1) 100%);
+      border-radius: 50% 50% 50% 50%;
+      transform: translateX(-10%);
+      animation: flicker 0.6s alternate ease-in-out;
+      transition: transform 1.5s ease, opacity 2s ease-out;
+    }
+
+    @keyframes flicker {
+      0% { transform: translateX(-50%) translateY(0) scale(1); }
+      50% { transform: translateX(-50%) translateY(-2px) scale(1.1); }
+      100% { transform: translateX(-50%) translateY(2px) scale(1); }
+    }
+
+    /* Extinguishing animation */
+    @keyframes extinguish {
+      0% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+      50% { transform: translateX(-70%) translateY(-10px) scale(0.9); opacity: 0.8; }
+      100% { transform: translateX(-100%) translateY(10px) scale(0.7); opacity: 0; }
+    }
+
+    .extinguishing {
+      animation: extinguish 1.5s forwards;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .birthday-card {
+        width: 90vw;
+        height: 90vw;
+      }
+
+      .candle {
+        width: 15px;
+        height: 80px;
+      }
+      
+      .candle-wax {
+        width: 12px;
+        height: 60px;
+      }
+
+      .flame {
+        top: -30px;
+        width: 15px;
+        height: 20px;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .note {
+        font-size: 1.2em;
+      }
+
+      .heart {
+        font-size: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy Birthday Shermain!</h1>
+  <button id="startButton">Tap to Start the Celebration</button>
+
+  <div class="birthday-card" style="display: none;">
+    <input id="open" type="checkbox">
+    <label class="open" for="open"></label>
+    <div class="card-front">
+      <div class="note">
+        <div class="heart"></div>
+        Click to Open
+      </div>
+    </div>
+    <div class="card-inside">
+      <div class="text-one"></div>
+      <div class="cake-container">
+        <!-- Candles -->
+        <div class="candle">
+          <div class="candle-wax"></div>
+          <div class="flame"></div>
+        </div>
+        <div class="candle">
+          <div class="candle-wax"></div>
+          <div class="flame"></div>
+        </div>
+        <div class="candle">
+          <div class="candle-wax"></div>
+          <div class="flame"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="instruction" id="instruction" style="display: none;">Blow to extinguish!</p>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const instructionText = document.getElementById('instruction');
+
+    // Function to extinguish the flame with animation
+    function extinguishFlame(flame) {
+      flame.classList.add('extinguishing');
+    }
+
+    function extinguishFlames() {
+      const flames = document.querySelectorAll('.flame');
+      flames.forEach(flame => extinguishFlame(flame));
+    }
+
+    function startMicrophone() {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(stream => {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const microphone = audioContext.createMediaStreamSource(stream);
+            const analyser = audioContext.createAnalyser();
+            microphone.connect(analyser);
+            analyser.fftSize = 256;
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+            function monitorSound() {
+              analyser.getByteFrequencyData(dataArray);
+              let volume = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+
+              if (volume > 60) {
+                extinguishFlames(); // Extinguish flame when sound volume exceeds threshold
+              } else {
+                requestAnimationFrame(monitorSound);
+              }
+            }
+
+            monitorSound();
+          })
+          .catch(err => {
+            console.error('Microphone access denied:', err);
+            alert('Please allow microphone access for blowing out the candles!');
+          });
+      } else {
+        alert('Your browser does not support microphone access.');
+      }
+    }
+
+    startButton.addEventListener('click', () => {
+      // Hide the start button and display the card
+      startButton.style.display = 'none';
+      document.querySelector('.birthday-card').style.display = 'block';
+      instructionText.style.display = 'block';
+
+      // Play birthday song
+      const audio = new Audio('birthday_song.mp3');
+      audio.play();
+
+      // Start microphone access
+      startMicrophone();
+    });
+
+    // Adding click event to extinguish flames manually
+    document.querySelectorAll('.flame').forEach(flame => {
+      flame.addEventListener('click', () => extinguishFlame(flame));
+    });
+  </script>
+</body>
+</html>
